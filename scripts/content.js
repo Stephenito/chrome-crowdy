@@ -90,15 +90,14 @@ chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.stop) {
 			if (confirm("Do you want to stop the recording? All actions will be discarded.")) {
-				if (confirm("Do you want to print the recording on a file?")) {
-					storageRemoveForPrint();
-					
-					chrome.storage.local.get(null, function(data) {
+				storageRemoveForPrint();
+
+				chrome.storage.local.get(null, function(data) {
+					if (confirm("Do you want to print the JSON file?"))
 						download(JSON.stringify(data,null,2), "recorded.json");
+					if (confirm("Do you want to print the TXT file?"))
 						download(printTXTfromJSON(data), "recorded.txt");
-					});
-				}
-				
+				});
 				storageInit();
 			}
 		}
