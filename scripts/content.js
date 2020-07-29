@@ -18,17 +18,21 @@ function download(data, filename) {
 
 function printTXTfromJSON(data) {
 	let str = "";
-	for (let event of data.chrono) {
-		str += getOnlyTime(data[event].time) + ": ";
-		if (event[0] == 'l') {
-			if (data[event].type == "error") {
-				str += "Error: " + data[event].msg + ", in file: '" + data[event].filename + + "', at line: " + data[event].lineno + "\n";
-			} else {
-				str += "Log: " + data[event].msg + "\n";
-			}
-		} else if (event[0] == 'c') {
-			str += "User clicked item with ID: '" + data[event].id_obj + "' in URL: '" + data[event].url + "'\n";
-		}
+	for (let strevent in data) {
+		if (strevent == "num")
+			continue;
+
+		let event = data[strevent];
+		str += getOnlyTime(event.time) + ": ";
+
+		if (event.type == 'error' || event.type == 'errorget')
+			str += "Error: " + event.data.message + ", in file: '" + event.data.filename + "', at line: " + event.data.lineno + "\n";
+
+		else if (event.type == 'console')
+			str += event.data.type + ": " + event.data.msg + "\n";
+
+		else if (event.type == 'click')
+			str += "User clicked item with ID: '" + event.data.id_obj + "' in URL: '" + event.data.url + "'\n";
 	}
 
 	return str;
@@ -44,7 +48,7 @@ function isClickable(element) {
 }
 
 function storageRemoveForPrint() {
-	chrome.storage.local.remove(["recording", "num_cl", "num_cn", "num_er", "num_erget"]);
+	chrome.storage.local.remove(["recording"]);
 }
 
 //

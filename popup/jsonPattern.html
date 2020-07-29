@@ -9,14 +9,11 @@
 	<pre id="json">
 {
 	// In the following scheme, /type\ represents the type. 
-
-	// Chrono is an array of events, that can be: clicks (cl), console lines (cn), errors (er).
-	"chrono": [ "cl_x", "cn_x", "er_x", ... ],
-
 	// The events are stored in the root. 'x' in keys has to be replaced with the number of the event 
 
 	// This stores a click event
-	"cl_x" : {
+	"ex" : {
+		"type": "click",
 		"time": /string\,
 		"data": {
 			"url": /string\,
@@ -28,7 +25,8 @@
 	}
 
 	// This stores a console log
-	"cn_x": {
+	"ex": {
+		"type": "console",
 		"time": /string\,
 		"data": {
 			"type": "log" OR "warn" OR "error" OR "debug",
@@ -37,15 +35,21 @@
 	}
 
 	// This stores a generical error (SyntaxError, UnknownType...)
-	"er_x": {
+	"ex": {
+		"type": "error",
 		"time": /string\,
 		"data": {
-			
+			"message": /string\,
+			"filename": /string\,
+			"lineno": /string\,
+			"colno": /string\,
+			"error": /string\
 		}
 	}
 
 	// This stores a GET error
-	"erget_x": {
+	"ex": {
+		"type": "errorget",
 		"time": /string\,
 		"data": {
 			"error": /string\,
