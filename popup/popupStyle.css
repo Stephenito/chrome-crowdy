@@ -1,18 +1,17 @@
 
 body {
 	font-family: "Comic Sans MS", cursive, sans-serif;
-	font-size: 90%;
+	font-size: 15px;
 	margin:3px;
 }
 
 table {
-	width:100%;
-	height: 100%;
 	border-collapse: collapse;
 	text-align: center;
 }
 
 td {
+	height:30px;
     white-space: nowrap;
 	border: 1px solid black;
 	padding: 10px;
@@ -23,6 +22,19 @@ td {
 	cursor:pointer;
 }
 
+#img_record {
+	margin:5px;
+}
+
+#text_record {
+	margin: 5px;
+}
+
 #btn_json {
 	cursor:pointer;
+}
+
+.icons {
+	width:50px;
+	height:50px;
 }
