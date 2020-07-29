@@ -1,4 +1,7 @@
+"use strict";
 
-chrome.storage.local.clear();
-chrome.storage.local.set({ "num":1 });
-chrome.storage.local.set({ recording: false });
+storageInit();
+
+chrome.webRequest.onErrorOccurred.addListener( function(details) {
+	writeEvent(ERRORGET,details);
+}, {urls: ["<all_urls>"]});
