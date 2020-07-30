@@ -29,7 +29,7 @@
 		"type": "console",
 		"time": /string\,
 		"data": {
-			"type": "log" OR "warn" OR "error" OR "debug",
+			"type": "c_log" OR "c_warn" OR "c_error" OR "c_debug",
 			"msg":/string\
 		}
 	}
@@ -41,9 +41,9 @@
 		"data": {
 			"message": /string\,
 			"filename": /string\,
-			"lineno": /string\,
-			"colno": /string\,
-			"error": /string\
+			"lineno": /number\,
+			"colno": /number\,
+			"error": /object\
 		}
 	}
 

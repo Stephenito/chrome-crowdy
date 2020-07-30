@@ -25,8 +25,11 @@ function printTXTfromJSON(data) {
 		let event = data[strevent];
 		str += getOnlyTime(event.time) + ": ";
 
-		if (event.type == 'error' || event.type == 'errorget')
+		if (event.type == 'error')
 			str += "Error: " + event.data.message + ", in file: '" + event.data.filename + "', at line: " + event.data.lineno + "\n";
+
+		else if (event.type == 'errorget')
+			str += "Error GET: " + event.data.error + ", in file: '" + event.data.url + "', type: " + event.data.type + "\n";
 
 		else if (event.type == 'console')
 			str += event.data.type + ": " + event.data.msg + "\n";
