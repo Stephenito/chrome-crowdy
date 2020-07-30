@@ -1,9 +1,8 @@
-{
+[
 	// In the following scheme, /type\ represents the type. 
-	// The events are stored in the root. 'x' in keys has to be replaced with the number of the event 
 
 	// This stores a click event
-	"ex" : {
+	{
 		"type": "click",
 		"time": /string\,
 		"data": {
@@ -16,7 +15,7 @@
 	}
 
 	// This stores a console log
-	"ex": {
+	{
 		"type": "console",
 		"time": /string\,
 		"data": {
@@ -26,7 +25,7 @@
 	}
 
 	// This stores a generical error (SyntaxError, UnknownType...)
-	"ex": {
+	{
 		"type": "error",
 		"time": /string\,
 		"data": {
@@ -39,7 +38,7 @@
 	}
 
 	// This stores a GET error
-	"ex": {
+	{
 		"type": "errorget",
 		"time": /string\,
 		"data": {
@@ -56,4 +55,4 @@
 			"url": /string\
 		}
 	}
-}
+]

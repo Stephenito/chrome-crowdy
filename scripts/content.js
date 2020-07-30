@@ -12,7 +12,7 @@ function download(data, filename) {
 		req.open('GET', chrome.runtime.getURL("popup/json.txt"));
 		req.onload = function() {
 			zip.file("jsonPattern.txt", this.response);
-			zip.file("recorded.json", JSON.stringify(data,null,2));
+			zip.file("recorded.json", printJSONfromJSON(data));
 			zip.file("recorded.txt", printTXTfromJSON(data));
 			
 			zip.generateAsync({type:"blob"})
@@ -24,12 +24,17 @@ function download(data, filename) {
 	});
 }
 
+function printJSONfromJSON(data) {
+	let obj = [];
+	for (let strevent in data) 
+		obj.push(data[strevent]);
+
+	return JSON.stringify(obj,null,2);
+}
+
 function printTXTfromJSON(data) {
 	let str = "";
 	for (let strevent in data) {
-		if (strevent == "num")
-			continue;
-
 		let event = data[strevent];
 		str += getOnlyTime(event.time) + ": ";
 
@@ -59,7 +64,7 @@ function isClickable(element) {
 }
 
 function storageRemoveForPrint() {
-	chrome.storage.local.remove(["recording"]);
+	chrome.storage.local.remove(["recording", "num"]);
 }
 
 //
