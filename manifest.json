@@ -21,13 +21,17 @@
 		"<all_urls>"
     ],
 
+    "web_accessible_resources": [
+    	"popup/json.txt"
+	],
+
 	"content_scripts": [
 	{
 		"matches": [
 			"<all_urls>"
 		],
 		"run_at": "document_idle",
-		"js": ["scripts/utility.js", "scripts/content.js"]
+		"js": ["lib/FileSaver.min.js", "lib/jszip.min.js", "scripts/utility.js", "scripts/content.js"]
 	},
 	{
 		"matches": [

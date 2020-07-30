@@ -1,0 +1,59 @@
+{
+	// In the following scheme, /type\ represents the type. 
+	// The events are stored in the root. 'x' in keys has to be replaced with the number of the event 
+
+	// This stores a click event
+	"ex" : {
+		"type": "click",
+		"time": /string\,
+		"data": {
+			"url": /string\,
+			"id_obj": /string\,
+			"class_obj": /string\,
+			"position_x": /string\,
+			"position_y": /string\
+		}
+	}
+
+	// This stores a console log
+	"ex": {
+		"type": "console",
+		"time": /string\,
+		"data": {
+			"type": "c_log" OR "c_warn" OR "c_error" OR "c_debug",
+			"msg":/string\
+		}
+	}
+
+	// This stores a generical error (SyntaxError, UnknownType...)
+	"ex": {
+		"type": "error",
+		"time": /string\,
+		"data": {
+			"message": /string\,
+			"filename": /string\,
+			"lineno": /number\,
+			"colno": /number\,
+			"error": /object\
+		}
+	}
+
+	// This stores a GET error
+	"ex": {
+		"type": "errorget",
+		"time": /string\,
+		"data": {
+			"error": /string\,
+			"frameId": /number\,
+			"fromCache": /bool\,
+			"initiator": /string\,
+			"method": /string\,
+			"parentFrameId": /number\,
+			"requestId": /string\,
+			"tabId": /number\,
+			"timeStamp": /number\,
+			"type": /string\,
+			"url": /string\
+		}
+	}
+}
