@@ -21,7 +21,7 @@ function writeEvent(type, data) {
 
 		let obj = {};
 		let num = storage.num + 1;
-		let key = "e" + num.toString();
+		let key = "e" + ('000000' + num.toString()).slice(-6);
 
 		obj[key] = {};
 		obj[key].time = printDatetime(new Date());

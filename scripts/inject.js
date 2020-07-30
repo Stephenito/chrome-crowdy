@@ -1,5 +1,19 @@
 "use strict";
 
+// LISTEN TO INJECTED INTERRUPTS
+window.addEventListener("message", function(event) {
+	if (event.source != window)
+		return;
+
+	if (event.data.ext == "chrome-crowdy") {
+		if (event.data.type == "log")
+			writeEvent(CONSOLE, event.data.data);
+		else if (event.data.type == "error")
+			writeEvent(ERROR, event.data.data);
+	}
+
+}, false);
+
 // APPEND SCRIPT BEFORE HEAD
 var script = document.createElement("script");
 
@@ -7,9 +21,10 @@ script.innerHTML = codeToInject + "\ncodeToInject(); \n";
 document.getElementsByTagName("html")[0].appendChild(script);
 
 function codeToInject() {
+
 	// SEND DATA OF THE CONSOLE TO CONTENT.JS
 	function writeLogForPage(consolearguments, type) {
-		setTimeout(function() {window.postMessage({ "type":"log", "ext":"chrome-crowdy", "data": {"type": type, "msg": consolearguments } } ,"*") }, 1000);
+		window.postMessage({ "type":"log", "ext":"chrome-crowdy", "data": {"type": type, "msg": consolearguments } } ,"*");
 	}
 
 	function writeErrorForPage(e) {
@@ -20,7 +35,7 @@ function codeToInject() {
 			"colno": e.colno,
 			"error": e.error
 		}
-		setTimeout(function() {window.postMessage({ "type":"error", "ext":"chrome-crowdy", "data":obj } , "*")}, 1000);
+		window.postMessage({ "type":"error", "ext":"chrome-crowdy", "data":obj } , "*");
 		return false;
 	};
 
@@ -37,12 +52,12 @@ function codeToInject() {
 	        console.defaultError.apply(console, [consolearguments]);
 	    }
 	    console.defaultWarn = console.warn.bind(console);
-	    console.warn = function(consolearguments){
+	    console.warn = function(consolearguments) {
 	    	writeLogForPage(consolearguments,"c_warn");
 	        console.defaultWarn.apply(console, [consolearguments]);
 	    }
 	    console.defaultDebug = console.debug.bind(console);
-	    console.debug = function(consolearguments){
+	    console.debug = function(consolearguments) {
 	        writeLogForPage(consolearguments,"c_debug");
 	        console.defaultDebug.apply(console, [consolearguments]);
 	    }

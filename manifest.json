@@ -15,6 +15,7 @@
 
 	"permissions": [
       	"storage",
+      	"unlimitedStorage",
       	"tabs",
       	"downloads",
 		"webRequest",
@@ -30,17 +31,17 @@
 		"matches": [
 			"<all_urls>"
 		],
-		"run_at": "document_idle",
-		"js": ["lib/FileSaver.min.js", "lib/jszip.min.js", "scripts/utility.js", "scripts/content.js"]
+		"run_at": "document_start",
+		"js": ["scripts/utility.js", "scripts/inject.js"]
 	},
 	{
 		"matches": [
 			"<all_urls>"
 		],
-		"run_at": "document_start",
-		"js": ["scripts/inject.js"]
+		"run_at": "document_idle",
+		"js": ["lib/FileSaver.min.js", "lib/jszip.min.js", "scripts/content.js"]
 	}
-
+	
 	],
 
 	"background": {

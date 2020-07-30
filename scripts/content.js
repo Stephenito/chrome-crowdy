@@ -87,20 +87,6 @@ document.getElementsByTagName("body")[0].addEventListener("click", function (eve
 	writeEvent(CLICK, data);
 }, true);
 
-// ADD LOG LINE
-window.addEventListener("message", function(event) {
-	if (event.source != window)
-		return;
-
-	if (event.data.ext == "chrome-crowdy") {
-		if (event.data.type == "log")
-			writeEvent(CONSOLE, event.data.data);
-		else if (event.data.type == "error")
-			writeEvent(ERROR, event.data.data);
-	}
-
-}, false);
-
 // STOP RECORDING
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
