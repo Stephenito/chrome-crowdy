@@ -5,13 +5,8 @@ window.addEventListener("message", function(event) {
 	if (event.source != window)
 		return;
 
-	if (event.data.ext == "chrome-crowdy") {
-		if (event.data.type == "log")
-			writeEvent(CONSOLE, event.data.data);
-		else if (event.data.type == "error")
-			writeEvent(ERROR, event.data.data);
-	}
-
+	if (event.data.ext == "chrome-crowdy")
+		chrome.runtime.sendMessage({ "type":(event.data.type == "log") ? CONSOLE : ERROR, "data":event.data.data });
 }, false);
 
 // APPEND SCRIPT BEFORE HEAD

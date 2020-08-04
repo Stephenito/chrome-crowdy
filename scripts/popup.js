@@ -3,7 +3,8 @@
 var btnRecord = document.getElementById("btn_record");
 var textRecord = document.getElementById("text_record");
 var imgRecord = document.getElementById("img_record");
-var btnJSON = document.getElementById("btn_json");
+var btnJSONpattern = document.getElementById("btn_json_pattern");
+var btnJSONactual = document.getElementById("btn_json_actual");
 
 // FUNCTIONS
 
@@ -28,8 +29,12 @@ btnRecord.addEventListener("click", function(event) {
 	});
 });
 
-btnJSON.addEventListener("click", function(event) {
+btnJSONpattern.addEventListener("click", function(event) {
 	chrome.tabs.create({ url:"../popup/jsonPattern.html" });
+});
+
+btnJSONactual.addEventListener(("click"), function (event) {
+	chrome.tabs.create({ url:"../popup/jsonActual.html" });
 });
 
 // CODE

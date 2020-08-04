@@ -84,7 +84,7 @@ document.getElementsByTagName("body")[0].addEventListener("click", function (eve
 		"position_y": event.clientY
 	};
 
-	writeEvent(CLICK, data);
+	chrome.runtime.sendMessage({ "type":CLICK, "data":data });
 }, true);
 
 // STOP RECORDING
