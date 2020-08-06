@@ -24,11 +24,11 @@ function codeToInject() {
 
 	function writeErrorForPage(e) {
 		let obj = {
-			"message": e.message,
-			"filename": e.filename,
+			"message": "" + e.message,
+			"filename": "" + e.filename,
 			"lineno": e.lineno,
 			"colno": e.colno,
-			"error": e.error
+			"error": "" + e.error
 		}
 		window.postMessage({ "type":"error", "ext":"chrome-crowdy", "data":obj } , "*");
 		return false;

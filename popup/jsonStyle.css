@@ -14,6 +14,7 @@ h1 {
 }
 
 #json {
+	font-family: "Lucida Console", Monaco, monospace;
 	width:90vw;
 	height:83vh;
 }

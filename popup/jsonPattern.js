@@ -1,13 +1,13 @@
 "use-strict";
 
-debugger;
-
 var frame = document.getElementById('json');
 
 function changeFontSize() {
-	debugger;
 	var body = frame.contentWindow.document.querySelector('body');
+	var pre = frame.contentWindow.document.querySelector('pre');
 	body.style.fontSize = '100%';
+	body.style.overflowX = "auto";
+	pre.style.whiteSpace = "pre";
 }
 
 if (window.readyState == "complete")
