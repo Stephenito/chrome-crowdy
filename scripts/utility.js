@@ -8,6 +8,7 @@ const ERRORGET = "errorget";
 function storageInit() {
 	chrome.storage.local.clear();
 	chrome.storage.local.set({ "num":0 });
+	chrome.storage.local.set({ "options": { "cachemiss": true } });
 }
 
 function printDatetime(date) {
@@ -15,8 +16,11 @@ function printDatetime(date) {
 }
 
 function writeEvent(type, data) {
-	chrome.storage.local.get(["num","recording"], function(storage) {
+	chrome.storage.local.get(["num","recording","options"], function(storage) {
 		if (!storage.recording)
+			return;
+
+		if (!storage.options.cachemiss && type == ERRORGET && data.error == "net::ERR_CACHE_MISS")
 			return;
 
 		let obj = {};

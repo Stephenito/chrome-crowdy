@@ -1,10 +1,12 @@
 "use-strict";
 
+var keysToIgnore = ["num","recording","options"];
+
 function update(changes, namespace) {
-	let skip = true;
+	let skip = false;
 	for (let key in changes) {
-		if (key != "num" && key != "recording")
-			skip = false;
+		if (keysToIgnore.includes(key))
+			skip = true;
 	}
 
 	if (skip && changes != null)
@@ -17,7 +19,7 @@ function update(changes, namespace) {
 	function printJSONfromJSON(data) {
 		let obj = [];
 		for (let strevent in data) {
-			if (strevent != "recording" && strevent != "num")
+			if (!keysToIgnore.includes(strevent))
 				obj.push(data[strevent]);
 		}
 

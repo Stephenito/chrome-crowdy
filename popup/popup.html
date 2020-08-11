@@ -7,16 +7,23 @@
 	<body>
 		<table>
 		  <tr>
-		    <td id="btn_record">
+		    <td id="btn_record" class="clickable">
 		    	<img id="img_record" class="icons" src="../icons/start_record.png"></img>
 		    	<p id="text_record">Start recording</p>
 		    </td>
 		  </tr>
 		  <tr>
-		    <td id="btn_json_pattern">Show JSON details</td>
+		    <td id="btn_json_pattern" class="clickable">Show JSON details</td>
 		  </tr>
 		  <tr>
-		    <td id="btn_json_actual">Show actually recorded data</td>
+		    <td id="btn_json_actual" class="clickable">Show actually recorded data</td>
+		  </tr>
+		  <tr>
+		  	<td>
+		  		Select data to include: <br>
+		  		<input id="opt_cachemiss" type="checkbox" name="opt_cachemiss" value="cachemiss" checked="true">
+		  		<label for="opt_cachemiss">Cache Miss errors</label>
+		  	</td>
 		  </tr>
 		</table>
 		<script src="../scripts/popup.js"></script>
