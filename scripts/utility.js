@@ -4,11 +4,13 @@ const CONSOLE = "console";
 const CLICK = "click";
 const ERROR = "error";
 const ERRORGET = "errorget";
+const COOKIESTART = "cookiestart";
+const COOKIE = "cookie";
 
 function storageInit() {
 	chrome.storage.local.clear();
-	chrome.storage.local.set({ "num":0 });
-	chrome.storage.local.set({ "options": { "cachemiss": true } });
+	chrome.storage.local.set({ "num":0, "recording":"none" });
+	chrome.storage.local.set({ "options": { "cachemiss": true, "extensions":true, "cookies":true, "disabled":false } });
 }
 
 function printDatetime(date) {
@@ -17,7 +19,7 @@ function printDatetime(date) {
 
 function writeEvent(type, data) {
 	chrome.storage.local.get(["num","recording","options"], function(storage) {
-		if (!storage.recording)
+		if (storage.recording  != "recording")
 			return;
 
 		if (!storage.options.cachemiss && type == ERRORGET && data.error == "net::ERR_CACHE_MISS")
@@ -25,7 +27,7 @@ function writeEvent(type, data) {
 
 		let obj = {};
 		let num = storage.num + 1;
-		let key = "e" + ('000000' + num.toString()).slice(-6);
+		let key = "event" + ('000000' + num.toString()).slice(-6);
 
 		obj[key] = {};
 		obj[key].time = printDatetime(new Date());

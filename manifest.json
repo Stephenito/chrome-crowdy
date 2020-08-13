@@ -3,6 +3,7 @@
 	"name": "Click Recorder",
 	"version": "0.1",
 	"description": "The extension that spies your tabs and clicks!",
+	"devtools_page": "devtools.html",
 	"browser_action": {
 		"default_title": "Recorder",
         "default_popup": "popup/popup.html"
@@ -14,6 +15,8 @@
         "128": "icons/icon128.png" },
 
 	"permissions": [
+		"cookies",
+		"management",
       	"storage",
       	"unlimitedStorage",
       	"tabs",
@@ -39,7 +42,7 @@
 			"<all_urls>"
 		],
 		"run_at": "document_idle",
-		"js": ["lib/FileSaver.min.js", "lib/jszip.min.js", "scripts/content.js"]
+		"js": ["scripts/content.js"]
 	}
 	
 	],

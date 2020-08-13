@@ -3,10 +3,10 @@
 var keysToIgnore = ["num","recording","options"];
 
 function update(changes, namespace) {
-	let skip = false;
+	let skip = true;
 	for (let key in changes) {
-		if (keysToIgnore.includes(key))
-			skip = true;
+		if (!keysToIgnore.includes(key))
+			skip = false;
 	}
 
 	if (skip && changes != null)
@@ -17,10 +17,15 @@ function update(changes, namespace) {
 	});
 
 	function printJSONfromJSON(data) {
-		let obj = [];
+		let obj = { "events":[] };
 		for (let strevent in data) {
-			if (!keysToIgnore.includes(strevent))
-				obj.push(data[strevent]);
+			if (!keysToIgnore.includes(strevent)) {
+				if (strevent.startsWith("event")) {
+					obj["events"].push(data[strevent]);
+				} else if (strevent == "extensions" || strevent == "starting_cookies") {
+					obj[strevent] = data[strevent];
+				}
+			}
 		}
 
 		return JSON.stringify(obj,null,2);
