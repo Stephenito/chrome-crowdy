@@ -7,7 +7,7 @@ function changeFontSize() {
 	var pre = frame.contentWindow.document.querySelector('pre');
 	body.style.fontSize = '100%';
 	body.style.overflowX = "auto";
-	pre.style.whiteSpace = "pre";
+	//pre.style.whiteSpace = "pre";
 }
 
 if (window.readyState == "complete")

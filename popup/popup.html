@@ -4,7 +4,6 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="popupStyle.css">
 		<script src="../scripts/utility.js"></script>
-		<script src="../lib/jszip.min.js"></script>
 		<script src="../lib/FileSaver.min.js"></script>
 	</head>
 	<body>
@@ -36,7 +35,11 @@
 		  		<input id="opt_extensions" type="checkbox" name="opt_extensions" value="extensions" checked="true">
 		  		<label for="opt_extensions">Extensions list</label><br>
 		  		<input id="opt_cookies" type="checkbox" name="opt_cookies" value="cookies" checked="true">
-		  		<label for="opt_cookies">Cookies</label>
+		  		<label for="opt_cookies">Cookies</label><br>
+		  		<input id="opt_local" type="checkbox" name="opt_local" value="localStorage" checked="true">
+		  		<label for="opt_local">Local storage</label><br>
+		  		<input id="opt_session" type="checkbox" name="opt_session" value="sessionStorage" checked="true">
+		  		<label for="opt_session">Session storage</label>
 		  	</td>
 		  </tr>
 		</table>
