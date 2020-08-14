@@ -78,7 +78,7 @@ function writeEvent(type, data) {
 
 function writeInitial(type, data, domain) {
 	chrome.storage.local.get(["recording","options",type], function (storage) {
-		if (storage.recording != "recording" || (!storage.options.cookies && type == COOKIESTART) || (!storage.options.localStorage && type == LOCALSTART))
+		if (storage.recording != "recording" || (!storage.options[COOKIE] && type == COOKIESTART) || (!storage.options[STORAGE] && type == LOCALSTART))
 			return;
 
 		for (let obj of storage[type])
