@@ -6,17 +6,12 @@ var cookieurl = window.location.href.split(":")[0] + "://" + document.domain;
 chrome.runtime.sendMessage({ "type":COOKIESTART , "data":cookieurl });
 
 
-// ASK FOR STORAGE
+// ASK FOR INITIAL LOCAL STORAGE
 
 let local = {};
 for (let i = 0; i < localStorage.length; i++)
 	local[localStorage.key(i)] = localStorage.getItem(localStorage.key(i));
-let session = {};
-for (let i = 0; i < sessionStorage.length; i++)
-	session[sessionStorage.key(i)] = sessionStorage.getItem(sessionStorage.key(i));
-
 chrome.runtime.sendMessage({ "type":LOCALSTART, "data":local, "domain":document.domain });
-chrome.runtime.sendMessage({ "type":SESSIONSTART, "data":session, "domain":document.domain });
 
 
 // LISTEN TO INJECTED INTERRUPTS
@@ -30,14 +25,24 @@ window.addEventListener("message", function(event) {
 }, false);
 
 
-// APPEND SCRIPT BEFORE HEAD
+// APPEND SCRIPT FOR CONSOLE AND ERROR EVENTS
 
 var script = document.createElement("script");
-
-script.innerHTML = codeToInject + "\ncodeToInject(); \n";
+script.innerHTML = consoleAndErrorInjection + "\consoleAndErrorInjection(); \n";
 document.getElementsByTagName("html")[0].appendChild(script);
 
-function codeToInject() {
+
+// APPEND IFRAME  FOR STORAGE EVENTS
+
+var iframe = document.createElement("iframe");
+iframe.setAttribute('id', 'crowdy-frame');
+iframe.style.display = "none";
+document.getElementsByTagName("html")[0].appendChild(iframe);
+iframe.contentWindow.addEventListener('storage', function(e) {
+	window.parent.window.postMessage({ "type":"storage", "ext":"chrome-crowdy", "data": {"url": e.url, "key": e.key, "oldValue": e.oldValue, "newValue": e.newValue } } ,"*");
+});
+
+function consoleAndErrorInjection() {
 
 	// SEND DATA OF THE CONSOLE TO CONTENT.JS
 	function writeLogForPage(consolearguments, type) {

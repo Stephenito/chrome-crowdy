@@ -3,7 +3,6 @@
 	"name": "Click Recorder",
 	"version": "0.1",
 	"description": "The extension that spies your tabs and clicks!",
-	"devtools_page": "devtools.html",
 	"browser_action": {
 		"default_title": "Recorder",
         "default_popup": "popup/popup.html"

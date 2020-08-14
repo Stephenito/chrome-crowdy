@@ -171,6 +171,6 @@ function download(data, filename) {
 
 function download(data, filename) {
 	chrome.storage.local.get(null, function(data) {
-		saveAs(new Blob(printJSONfromJSON(data), {type: "text/plain;charset=utf-8"}), "recorded.json");
+		saveAs(new Blob([printJSONfromJSON(data)], {type: "text/plain;charset=utf-8"}), "recorded.json");
 	});
 }

@@ -9,17 +9,17 @@ chrome.runtime.onMessage.addListener(
 				writeInitial(request.type, cookielist, request.data);
 			});
 		}
-		else if (request.type == LOCALSTART || request.type == SESSIONSTART)
+		else if (request.type == LOCALSTART)
 			writeInitial(request.type, request.data, request.domain);
 		else
-			writeEvent(request.type, request.data);
+			tryWriteEvent(request.type, request.data);
 	}
 );
 
 chrome.webRequest.onErrorOccurred.addListener(function(details) {
-	writeEvent(ERRORGET,details);
+	tryWriteEvent(ERRORGET,details);
 }, {urls: ["<all_urls>"]});
 
 chrome.cookies.onChanged.addListener(function (changeInfo) {
-	writeEvent(COOKIE,changeInfo);
+	tryWriteEvent(COOKIE,changeInfo);
 });
