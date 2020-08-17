@@ -1,46 +1,50 @@
 "use strict";
 
-// ASK FOR COOKIES
+tryInject(injectJS);
 
-var cookieurl = window.location.href.split(":")[0] + "://" + document.domain;
-chrome.runtime.sendMessage({ "type":COOKIESTART , "data":cookieurl });
+function injectJS () {
+	// ASK FOR COOKIES
 
-
-// ASK FOR INITIAL LOCAL STORAGE
-
-let local = {};
-for (let i = 0; i < localStorage.length; i++)
-	local[localStorage.key(i)] = localStorage.getItem(localStorage.key(i));
-chrome.runtime.sendMessage({ "type":LOCALSTART, "data":local, "domain":document.domain });
+	var cookieurl = window.location.href.split(":")[0] + "://" + document.domain;
+	chrome.runtime.sendMessage({ "type":COOKIESTART , "data":cookieurl });
 
 
-// LISTEN TO INJECTED INTERRUPTS
+	// ASK FOR INITIAL LOCAL STORAGE
 
-window.addEventListener("message", function(event) {
-	if (event.source != window)
-		return;
-
-	if (event.data.ext == "chrome-crowdy")
-		chrome.runtime.sendMessage({ "type":event.data.type, "data":event.data.data, "domain":event.data.domain });
-}, false);
+	let local = {};
+	for (let i = 0; i < localStorage.length; i++)
+		local[localStorage.key(i)] = localStorage.getItem(localStorage.key(i));
+	chrome.runtime.sendMessage({ "type":LOCALSTART, "data":local, "domain":document.domain });
 
 
-// APPEND SCRIPT FOR CONSOLE AND ERROR EVENTS
+	// LISTEN TO INJECTED INTERRUPTS
 
-var script = document.createElement("script");
-script.innerHTML = consoleAndErrorInjection + "\consoleAndErrorInjection(); \n";
-document.getElementsByTagName("html")[0].appendChild(script);
+	window.addEventListener("message", function(event) {
+		if (event.source != window)
+			return;
+
+		if (event.data.ext == "chrome-crowdy")
+			chrome.runtime.sendMessage({ "type":event.data.type, "data":event.data.data, "domain":event.data.domain });
+	}, false);
 
 
-// APPEND IFRAME  FOR STORAGE EVENTS
+	// APPEND IFRAME  FOR STORAGE EVENTS
 
-var iframe = document.createElement("iframe");
-iframe.setAttribute('id', 'crowdy-frame');
-iframe.style.display = "none";
-document.getElementsByTagName("html")[0].appendChild(iframe);
-iframe.contentWindow.addEventListener('storage', function(e) {
-	window.parent.window.postMessage({ "type":"storage", "ext":"chrome-crowdy", "data": {"url": e.url, "key": e.key, "oldValue": e.oldValue, "newValue": e.newValue } } ,"*");
-});
+	var iframe = document.createElement("iframe");
+	iframe.setAttribute('id', 'crowdy-frame');
+	iframe.style.display = "none";
+	document.getElementsByTagName("html")[0].appendChild(iframe);
+	iframe.contentWindow.addEventListener('storage', function(e) {
+		window.parent.window.postMessage({ "type":"storage", "ext":"chrome-crowdy", "data": {"url": e.url, "key": e.key, "oldValue": e.oldValue, "newValue": e.newValue } } ,"*");
+	});
+
+
+	// APPEND SCRIPT FOR CONSOLE AND ERROR EVENTS
+
+	var script = document.createElement("script");
+	script.innerHTML = consoleAndErrorInjection + "\consoleAndErrorInjection(); \n";
+	document.getElementsByTagName("html")[0].appendChild(script);
+}
 
 function consoleAndErrorInjection() {
 
@@ -87,5 +91,6 @@ function consoleAndErrorInjection() {
 
 	assignConsole();
 	window.addEventListener('error',writeErrorForPage);
+	console.log("CICCIO");
 }
 

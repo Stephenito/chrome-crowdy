@@ -60,6 +60,7 @@ btnRecord.addEventListener("click", function(event) {
 			storage.options.disabled = true;
 			chrome.storage.local.set({ options:storage.options, recording: "recording" });
 			changeToRecord();
+
 		} 
 		else if (storage.recording == "recording") {
 			confirmText.innerText = "Are you sure?";
