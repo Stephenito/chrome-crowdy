@@ -82,7 +82,7 @@ confirmYes.addEventListener("click", function (event) {
 	chrome.storage.local.get("recording", function (result) {
 
 		if (result.recording == "confirm") {
-			confirmText.innerText = "Do you want to download?";
+			confirmTextAnim("Do you want to download?");
 			chrome.storage.local.set({ recording: "download" });
 			initRecord();
 		} 
@@ -96,6 +96,12 @@ confirmYes.addEventListener("click", function (event) {
 
 	});
 });
+
+function confirmTextAnim(str) {
+	confirmText.style.opacity = 0;
+	setTimeout(() => {confirmText.innerText = str; } , 100);
+	setTimeout(() => {confirmText.style.opacity = 1; } , 200);
+}
 
 confirmNo.addEventListener("click", function (event) {
 	chrome.storage.local.get("recording", function (result) {

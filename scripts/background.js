@@ -1,11 +1,11 @@
 "use strict";
 
 function getWebErrors(details) {
-	tryWriteEvent(ERRORGET,ARR_EVENTS,details);
+	tryWriteEvent(ERRORGET,ARR_EVENTS,details,details.initiator);
 }
 
 function getCookies (changeInfo) {
-	tryWriteEvent(COOKIE,ARR_EVENTS,changeInfo);
+	tryWriteEvent(COOKIE,ARR_EVENTS,changeInfo,changeInfo.cookie.domain);
 }
 
 function getInitialConditions (request, sender, sendResponse) {

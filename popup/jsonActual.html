@@ -2,11 +2,15 @@
 <html>
 	<head>
 		<title>Recorded JSON</title>
-		<link rel="stylesheet" type="text/css" href="jsonStyle.css"/>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
 	</head>
-	<body>
-		<h1>Actually recorded JSON</h1>
+	<body id="jsonBody">
+		<div id="header">
+			<h1>Actually recorded JSON</h1>
+			<div id="buttonsContainer"></div>
+		</div>
 		<iframe id="json" src="iframe.html"></iframe>
-		<script src="jsonPattern.js"></script>
+		<script src="../scripts/utility.js"></script>
+		<script src="jsonActual.js"></script>
 	</body>
 <html>
