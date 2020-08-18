@@ -150,28 +150,23 @@ chrome.storage.local.get(["recording","options"], function(result) {
 });
 
 // DOWNLOAD
-/*
+
 function download(data, filename) {
-	let zip = new JSZip();
+	chrome.storage.local.get(null, function(data) {
+		saveAs(new Blob([getJSONStringToDownload(data)], {type: "text/plain;charset=utf-8"}), "recorded.json");
+	});
+}
+
+function getJSONStringToDownload(data) {
+	KEYSTOIGNORE.forEach( key => { delete data[key] } );
+	let finalobj = {};
+	ARRAYS.forEach(arr => { finalobj[arr] = []; } );
+
+	finalobj.extensions = data.extensions;
+	delete data.extensions;
 	
-	chrome.storage.local.get(null, function(data) {
-		var req = new XMLHttpRequest();
-		req.open('GET', chrome.runtime.getURL("popup/json.txt"));
-		req.onload = function() {
-			zip.file("jsonPattern.txt", this.response);
-			zip.file("recorded.json", printJSONfromJSON(data));
+	for (let obj in data)
+		finalobj[obj.split("|")[0]].push(data[obj]);
 
-			zip.generateAsync({type:"blob"})
-			.then(function(content) {
-			    saveAs(content, "recorded.zip");
-			});
-		};
-		req.send();
-	});
-}*/
-
-function download(data, filename) {
-	chrome.storage.local.get(null, function(data) {
-		saveAs(new Blob([printJSONfromJSON(data)], {type: "text/plain;charset=utf-8"}), "recorded.json");
-	});
+	return JSON.stringify(finalobj,null,2);
 }

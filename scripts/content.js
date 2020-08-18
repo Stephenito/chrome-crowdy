@@ -23,6 +23,6 @@ function contentJS() {
 			"position_y": event.clientY
 		};
 
-		chrome.runtime.sendMessage({ "type":CLICK, "data":data });
+		chrome.runtime.sendMessage({ array:ARR_EVENTS, 'type':CLICK, 'data':data, 'domain':window.location.href });
 	}, true);
 }

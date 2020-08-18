@@ -1,23 +1,21 @@
 "use strict";
 
 function getWebErrors(details) {
-	tryWriteEvent(ERRORGET,details);
+	tryWriteEvent(ERRORGET,ARR_EVENTS,details);
 }
 
 function getCookies (changeInfo) {
-	tryWriteEvent(COOKIE,changeInfo);
+	tryWriteEvent(COOKIE,ARR_EVENTS,changeInfo);
 }
 
 function getInitialConditions (request, sender, sendResponse) {
-	if (request.type == COOKIESTART) {
+	if (request.type == ARR_COOKIESTART) {
 		chrome.cookies.getAll({ url:request.data }, function (cookielist) {
-			writeInitial(request.type, cookielist, request.data);
+			tryWriteEvent(COOKIE, ARR_COOKIESTART, cookielist, request.data);
 		});
 	}
-	else if (request.type == LOCALSTART)
-		writeInitial(request.type, request.data, request.domain);
 	else
-		tryWriteEvent(request.type, request.data);
+		tryWriteEvent(request.type, request.array, request.data, request.domain);
 }
 
 function setListeners() {
@@ -46,17 +44,17 @@ chrome.storage.onChanged.addListener(function (changeInfo) {
 
 var busy = false;
 
-function tryWriteEvent(type,data) {
+function tryWriteEvent(type, array, data, domain) {
 	if (busy)
-		setTimeout(() => { tryWriteEvent(type,data); },100);
+		setTimeout(() => { tryWriteEvent(type,array,data,domain); },100);
 	else {
 		busy = true;
-		writeEvent(type,data);
+		writeEvent(type,array,data,domain);
 	}
 }
 
-function writeEvent(type, data) {
-	chrome.storage.local.get(["events","options"], function(storage) {
+function writeEvent(type, array, data, domain) {
+	chrome.storage.local.get(["num","domains","options"], function(storage) {
 		if (!storage.options.cachemiss && type == ERRORGET && data.error == "net::ERR_CACHE_MISS") {
 			busy = false;
 			return;
@@ -66,27 +64,23 @@ function writeEvent(type, data) {
 			return;
 		}
 
-		storage.events.push({ "time":printDatetime(new Date()), "type":type, "data":data });
-		chrome.storage.local.set({"events":storage.events});
-
-		busy = false;
-	});
-}
-
-function writeInitial(type, data, domain) {
-	chrome.storage.local.get(["options",type], function (storage) {
-		//if (storage.recording != "recording")
-		//	return;
-		if ((!storage.options[COOKIE] && type == COOKIESTART) || (!storage.options[STORAGE] && type == LOCALSTART))
+		debugger;
+		if (array != ARR_EVENTS && storage.domains.includes(domain))
 			return;
 
-		for (let obj of storage[type])
-			if (obj.domain == domain)
-				return;
-
 		let obj = {};
-		storage[type].push({ "time":printDatetime(new Date()), "domain":domain, "data":data });
-		obj[type] = storage[type];
+		let num = storage.num + 1;
+		let key = array + "|" + ('000000000000' + num.toString()).slice(-12);
+
+		obj[key] = {};
+		obj[key].time = printDatetime(new Date());
+		obj[key].type = type;
+		obj[key].data = data;
+		obj[key].domain = domain;
+
 		chrome.storage.local.set(obj);
+		chrome.storage.local.set({ "num":num });
+
+		busy = false;
 	});
 }
