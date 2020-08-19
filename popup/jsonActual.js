@@ -1,30 +1,35 @@
 "use-strict";
 
-var buttons = document.getElementById("buttonsContainer");
 var iframe = document.getElementById("json");
 
 OPTIONS.forEach( opt => {
-	if (opt != EXTENSIONS) {
-		let button = document.createElement("button");
-		button.id = opt;
-		button.value = "block";
-		button.classList.add("selection_button");
-		button.innerHTML = opt;
-		button.onclick = optionListener;
-		buttons.appendChild(button);
-	}
+	if (opt != EXTENSIONS)
+		createButton(opt,optionListener,"optionButtons");
 });
-buttons.appendChild(document.createElement("br"));
-ARRAYS.forEach( arr => {
+ARRAYS.forEach( arr => { createButton(arr,arrayListener,"arrayButtons"); });
+/*
+chrome.storage.local.get("domains", function (storage) {
+	storage.domains.forEach( domain => {
+		createButton(domain,domainListener,"domainButtons")
+	});
+});
+chrome.storage.onChanged.addListener( function (changeInfo) {
+	if (!changeInfo.domains)
+		return;
+	changeInfo.domains.newValue.forEach( domain => {
+		createButton(domain,domainListener,"domainButtons")
+	});
+});*/
+
+function createButton (id,click,idparent) {
 	let button = document.createElement("button");
-	button.id = arr;
+	button.id = id;
 	button.value = "block";
 	button.classList.add("selection_button");
-	button.innerHTML = arr;
-	button.onclick = arrayListener;
-	buttons.appendChild(button);
-});
-buttons.appendChild(document.createElement("br"));
+	button.innerHTML = id;
+	button.onclick = click;
+	document.getElementById(idparent).appendChild(button);
+}
 
 function optionListener(event) {
 	let spans = iframe.contentWindow.document.querySelectorAll("#list span[type=" + event.target.id + "]");
@@ -39,6 +44,13 @@ function arrayListener(event) {
 	
 	pre.style.display = event.target.value;
 }
+/*
+function domainListener() {
+	let spans = iframe.contentWindow.document.querySelectorAll("#list span[domain=" + event.target.id.replace(/./g,"") + "]");
+	toggleValue(event.target);
+
+	spans.forEach( span => { span.style.display = event.target.value; } );
+}*/
 
 function toggleValue(item) {
 	if (item.value == "none") {

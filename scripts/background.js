@@ -64,11 +64,19 @@ function writeEvent(type, array, data, domain) {
 			return;
 		}
 
-		debugger;
-		if (array != ARR_EVENTS && storage.domains.includes(domain))
-			return;
-
 		let obj = {};
+		/*
+		domain = trimDomain(domain);
+		domain = domain.split("/")[0];
+		
+		if (storage.domains.includes(domain)) {
+			if (array != ARR_EVENTS)
+				return;
+		} else {
+			obj["domains"] = storage.domains;
+			obj["domains"].push(domain);
+		}
+		*/
 		let num = storage.num + 1;
 		let key = array + "|" + ('000000000000' + num.toString()).slice(-12);
 
@@ -77,10 +85,20 @@ function writeEvent(type, array, data, domain) {
 		obj[key].type = type;
 		obj[key].data = data;
 		obj[key].domain = domain;
-
+		obj["num"] = num;
+		
 		chrome.storage.local.set(obj);
-		chrome.storage.local.set({ "num":num });
 
 		busy = false;
 	});
 }
+/*
+function trimDomain(domain) {
+	if (domain.startsWith("http://"))
+		return domain.slice(7);
+	if (domain.startsWith("https://"))
+		return domain.slice(8);
+	if (domain.startsWith("."))
+		return domain.slice(1);
+	return domain;
+}*/
