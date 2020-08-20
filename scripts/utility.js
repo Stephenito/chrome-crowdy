@@ -16,13 +16,13 @@ const ARR_EVENTS = "events";
 const ARR_COOKIESTART = "starting_cookies";
 const ARR_LOCALSTART = "starting_localStorage";
 const ARR_EXTENSIONS = "extensions";
-const ARRAYS = [ARR_EVENTS, ARR_COOKIESTART, ARR_LOCALSTART, ARR_EXTENSIONS];
+const ARRAYS = [ARR_EVENTS, ARR_LOCALSTART, ARR_COOKIESTART, ARR_EXTENSIONS];
 
-const KEYSTOIGNORE = ["recording","options","num","domains"];
+const KEYSTOIGNORE = ["recording","options","num","domains_cookie","domains_storage"];
 
 function storageInit() {
 	chrome.storage.local.clear();
-	chrome.storage.local.set({ "recording":"none", "num":0, "domains":[] });
+	chrome.storage.local.set({ "recording":"none", "num":0, "domains_cookie":[], "domains_storage":[] });
 	
 	let obj = {};
 	obj["disabled"] = false;

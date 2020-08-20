@@ -42,41 +42,41 @@ chrome.storage.onChanged.addListener(function (changeInfo) {
 
 // WRITE IN STORAGE
 
-var busy = false;
+var promises = [];
 
 function tryWriteEvent(type, array, data, domain) {
-	if (busy)
-		setTimeout(() => { tryWriteEvent(type,array,data,domain); },100);
-	else {
-		busy = true;
-		writeEvent(type,array,data,domain);
-	}
+	promises.push(writeEvent(type,array,data,domain, promises.length));
 }
 
-function writeEvent(type, array, data, domain) {
-	chrome.storage.local.get(["num","domains","options"], function(storage) {
+async function writeEvent(type, array, data, domain,position) {
+	if (position > 0)
+		await promises[position-1];
+
+	chrome.storage.local.get(["num","domains_cookie","domains_storage","options"], function(storage) {
 		if (!storage.options.cachemiss && type == ERRORGET && data.error == "net::ERR_CACHE_MISS") {
-			busy = false;
-			return;
+			promises.shift();
+			return Promise.resolve();
 		}
 		if (!storage.options[type]) {
-			busy = false;
-			return;
+			promises.shift();
+			return Promise.resolve();
 		}
 
 		let obj = {};
-		/*
+		
 		domain = trimDomain(domain);
 		domain = domain.split("/")[0];
+
+		let storageDomain = (ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
 		
-		if (storage.domains.includes(domain)) {
+		if (storage[storageDomain].includes(domain)) {
 			if (array != ARR_EVENTS)
 				return;
 		} else {
-			obj["domains"] = storage.domains;
-			obj["domains"].push(domain);
+			obj[storageDomain] = storage[storageDomain];
+			obj[storageDomain].push(domain);
 		}
-		*/
+		
 		let num = storage.num + 1;
 		let key = array + "|" + ('000000000000' + num.toString()).slice(-12);
 
@@ -89,10 +89,11 @@ function writeEvent(type, array, data, domain) {
 		
 		chrome.storage.local.set(obj);
 
-		busy = false;
+		promises.shift();
+		return Promise.resolve();
 	});
 }
-/*
+
 function trimDomain(domain) {
 	if (domain.startsWith("http://"))
 		return domain.slice(7);
@@ -101,4 +102,4 @@ function trimDomain(domain) {
 	if (domain.startsWith("."))
 		return domain.slice(1);
 	return domain;
-}*/
+}

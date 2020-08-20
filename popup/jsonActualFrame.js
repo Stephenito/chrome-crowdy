@@ -5,7 +5,6 @@ var arrays = document.querySelectorAll("#list pre");
 function deleteAllChar(str,char) {
 	let oldstr = str;
 	let newstr = str.replace(".","");
-	debugger;
 	while (oldstr != newstr) {
 		oldstr = newstr;
 		newstr = newstr.replace(".","");
@@ -13,8 +12,8 @@ function deleteAllChar(str,char) {
 	return newstr;
 }
 
-function getPrePiece(obj) {
-	return "<span type=" + obj.type + " style='display:block;'>" + JSON.stringify(obj,null,2) + "<hr></span>";
+function getPrePiece(obj,array) {
+	return "<span type=" + obj.type + " style='display:" + ((array != "extensions") ? (window.parent.document.getElementById(obj.type).value) : "block") +  ";'>" + JSON.stringify(obj,null,2) + "<hr></span>";
 	//return "<span type=" + obj.type + ((obj.domain != undefined) ? (" domain=" + deleteAllChar(obj.domain,".")) : " ") + " style='display:block;'>" + JSON.stringify(obj,null,2) + "<hr></span>";
 }
 
@@ -23,11 +22,11 @@ function update(changes, namespace) {
 		arrays.forEach( pre => {
 			if (key.startsWith(pre.id)) {
 				if (changes[key].newValue) 
-					pre.innerHTML += getPrePiece(changes[key].newValue);
+					pre.innerHTML += getPrePiece(changes[key].newValue, pre.id);
 				else if (changes[key].oldValue)
 					pre.innerHTML = "";
 				else
-					pre.innerHTML += getPrePiece(changes[key]);
+					pre.innerHTML += getPrePiece(changes[key], pre.id);
 			}
 		});
 	};
