@@ -86,7 +86,7 @@ async function writeEvent(type, array, data, domain,position) {
 		obj[key].data = data;
 		obj[key].domain = domain;
 		obj["num"] = num;
-		
+
 		chrome.storage.local.set(obj);
 
 		promises.shift();
