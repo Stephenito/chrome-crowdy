@@ -42,56 +42,67 @@ chrome.storage.onChanged.addListener(function (changeInfo) {
 
 // WRITE IN STORAGE
 
-var promises = [];
+var updates = [];
+var running = false;
 
 function tryWriteEvent(type, array, data, domain) {
-	promises.push(writeEvent(type,array,data,domain, promises.length));
+	updates.push({ 'type':type, 'array':array, 'data': data, 'domain':domain });
+	writeEvent();
 }
 
-async function writeEvent(type, array, data, domain,position) {
-	if (position > 0)
-		await promises[position-1];
+function writeEvent() {
+	if (!updates.length || running)
+        return;
 
+    running = true;
 	chrome.storage.local.get(["num","domains_cookie","domains_storage","options"], function(storage) {
-		if (!storage.options.cachemiss && type == ERRORGET && data.error == "net::ERR_CACHE_MISS") {
-			promises.shift();
-			return Promise.resolve();
+		let item = updates[0];
+		updates.shift();
+
+		if (!storage.options.cachemiss && item.type == ERRORGET && item.data.error == "net::ERR_CACHE_MISS") {
+			preExit();
+			return;
 		}
-		if (!storage.options[type]) {
-			promises.shift();
-			return Promise.resolve();
+		if (!storage.options[item.type]) {
+			preExit();
+			return;
 		}
 
 		let obj = {};
 		
-		domain = trimDomain(domain);
-		domain = domain.split("/")[0];
+		item.domain = trimDomain(item.domain);
+		item.domain = item.domain.split("/")[0];
 
-		let storageDomain = (ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
+		let storageDomain = (item.array == ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
 		
-		if (storage[storageDomain].includes(domain)) {
-			if (array != ARR_EVENTS)
+		if (storage[storageDomain].includes(item.domain)) {
+			if (item.array != ARR_EVENTS) {
+				preExit();
 				return;
+			}
 		} else {
 			obj[storageDomain] = storage[storageDomain];
-			obj[storageDomain].push(domain);
+			obj[storageDomain].push(item.domain);
 		}
 		
 		let num = storage.num + 1;
-		let key = array + "|" + ('000000000000' + num.toString()).slice(-12);
+		let key = item.array + "|" + ('000000000000' + num.toString()).slice(-12);
 
 		obj[key] = {};
 		obj[key].time = printDatetime(new Date());
-		obj[key].type = type;
-		obj[key].data = data;
-		obj[key].domain = domain;
+		obj[key].type = item.type;
+		obj[key].data = item.data;
+		obj[key].domain = item.domain;
 		obj["num"] = num;
 
-		chrome.storage.local.set(obj);
-
-		promises.shift();
-		return Promise.resolve();
+		chrome.storage.local.set(obj, () => { preExit(); });
 	});
+}
+
+function preExit() {
+	running = false;
+	if (updates.length)
+		writeEvent();
 }
 
 function trimDomain(domain) {
