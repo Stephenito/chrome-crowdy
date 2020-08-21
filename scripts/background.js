@@ -56,44 +56,41 @@ function writeEvent() {
 
     running = true;
 	chrome.storage.local.get(["num","domains_cookie","domains_storage","options"], function(storage) {
-		let item = updates[0];
-		updates.shift();
-
-		if (!storage.options.cachemiss && item.type == ERRORGET && item.data.error == "net::ERR_CACHE_MISS") {
-			preExit();
-			return;
-		}
-		if (!storage.options[item.type]) {
-			preExit();
-			return;
-		}
-
+		let num = storage.num;
 		let obj = {};
-		
-		item.domain = trimDomain(item.domain);
-		item.domain = item.domain.split("/")[0];
+		let tmpUpdates = updates.slice();
 
-		let storageDomain = (item.array == ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
-		
-		if (storage[storageDomain].includes(item.domain)) {
-			if (item.array != ARR_EVENTS) {
-				preExit();
-				return;
+		for (let item of tmpUpdates) {
+			if (!storage.options.cachemiss && item.type == ERRORGET && item.data.error == "net::ERR_CACHE_MISS")
+				continue;
+			if (!storage.options[item.type])
+				continue;
+
+			item.domain = trimDomain(item.domain);
+			item.domain = item.domain.split("/")[0];
+
+			let storageDomain = (item.array == ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
+			
+			if (storage[storageDomain].includes(item.domain) || (obj[storageDomain] && obj[storageDomain].includes(item.domain))) {
+				if (item.array != ARR_EVENTS)
+					continue;
+			} else {
+				obj[storageDomain] = storage[storageDomain];
+				obj[storageDomain].push(item.domain);
 			}
-		} else {
-			obj[storageDomain] = storage[storageDomain];
-			obj[storageDomain].push(item.domain);
-		}
-		
-		let num = storage.num + 1;
-		let key = item.array + "|" + ('000000000000' + num.toString()).slice(-12);
+			
+			num = num + 1;
+			let key = item.array + "|" + ('000000000000' + num.toString()).slice(-12);
 
-		obj[key] = {};
-		obj[key].time = printDatetime(new Date());
-		obj[key].type = item.type;
-		obj[key].data = item.data;
-		obj[key].domain = item.domain;
+			obj[key] = {};
+			obj[key].time = printDatetime(new Date());
+			obj[key].type = item.type;
+			obj[key].data = item.data;
+			obj[key].domain = item.domain;
+		}
+
 		obj["num"] = num;
+		updates = updates.filter( x => !tmpUpdates.includes(x));
 
 		chrome.storage.local.set(obj, () => { preExit(); });
 	});
