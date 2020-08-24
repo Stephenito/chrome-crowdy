@@ -4,12 +4,13 @@ tryInject(injectJS);
 
 function injectJS () {
 	// ASK FOR COOKIES
+	// Cookies can only be accessed from the background page
 
 	let cookieurl = window.location.href.split(":")[0] + "://" + document.domain;
 	chrome.runtime.sendMessage({ "type":ARR_COOKIESTART , "data":cookieurl });
 
 
-	// ASK FOR INITIAL LOCAL STORAGE
+	// SEND INITIAL LOCAL STORAGE TO BACKGROUND PAGE
 
 	let local = {};
 	for (let i = 0; i < localStorage.length; i++)
@@ -18,17 +19,20 @@ function injectJS () {
 
 
 	// LISTEN TO INJECTED INTERRUPTS
+	// Messages can be exchanged between the content script and the page scripts with the window class.
 
 	window.addEventListener("message", function(event) {
 		if (event.source != window)
 			return;
 
-		if (event.data.ext == "chrome-crowdy")
+		if (event.data.ext == "chrome-crowdy")	// Check if the messagge comes from the extension injected script
 			chrome.runtime.sendMessage({ "type":event.data.type, "array":ARR_EVENTS, "data":event.data.data, "domain":event.data.domain });
 	}, false);
 
 
 	// APPEND IFRAME  FOR STORAGE EVENTS
+	// An iframe is the only way to catch storage events. In fact, 'storage' event listener listens for storage changes that have been made on the same domain BUT in a different window.
+	// So you can't only listen for this event in the main page, but you need to listen to it in the iframe.
 
 	let iframe = document.createElement("iframe");
 	iframe.setAttribute('id', 'crowdy-frame');
@@ -53,6 +57,7 @@ function consoleAndErrorInjection() {
 		window.postMessage({ "type":"console", "ext":"chrome-crowdy", "data": {"type": type, "msg": consolearguments } } ,"*");
 	}
 
+	// SEND DATA OF THE ERRORS TO CONTENT.JS
 	function writeErrorForPage(e) {
 		let obj = {
 			"message": "" + e.message,

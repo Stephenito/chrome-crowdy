@@ -9,7 +9,8 @@ function contentJS() {
 		return (getComputedStyle(element).cursor == "pointer" || element.getAttribute("role") == "button" || element.href != undefined || element.tagName == "button");
 	}
 
-	// BODY LISTENER FOR CLICKS IN CAPTURE
+	// BODY LISTENER FOR CLICKS 
+	// The click is caught during the 'capturing' phase, so it gets stored beofre the click itself gets executed.
 
 	document.getElementsByTagName("body")[0].addEventListener("click", function (event) {
 		if (!isClickable(event.target))

@@ -34,6 +34,7 @@ function printDatetime(date) {
 	return ('0' + date.getDate()).slice(-2) + "/" + ('0' + date.getMonth()).slice(-2) + "/" + date.getFullYear() + " " + ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
 }
 
+// Done in 'content.js' and 'inject.js'. If the extension isn't recording, there's no need to inject the scripts. It will only slow down the browser.
 function tryInject (func) {
 	chrome.storage.local.get("recording", function (storage) {
 		if (storage.recording == 'recording')

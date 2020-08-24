@@ -15,7 +15,6 @@
 
 	"permissions": [
 		"cookies",
-		"contentSettings",
 		"management",
       	"storage",
       	"unlimitedStorage",
@@ -43,9 +42,7 @@
 		],
 		"run_at": "document_idle",
 		"js": ["scripts/content.js"]
-	}
-	
-	],
+	}],
 	
 
 	"background": {

@@ -21,7 +21,7 @@ function disableOptions(value) {
 		opt.disabled = value;
 }
 
-function setStorageFromOptions() {
+function setStorageFromOptions() {	// Set the options in the storage from the selected checkboxes
 	chrome.storage.local.get("options", function (storage) {
 		for (let opt of options)
 			storage.options[opt.value] = opt.checked;
@@ -30,12 +30,14 @@ function setStorageFromOptions() {
 	});
 }
 
+// Graphic changes to the recording buttons (recording phase)
 function changeToRecord() {
 	textRecord.innerText = "Stop recording";
 	btnRecord.style.backgroundColor = "firebrick";
 	imgRecord.src = "../icons/stop_record.png";
 }
 
+// Graphic changes to the recording buttons (not recording phase)
 function initRecord() {
 	textRecord.innerText = "Start recording";
 	btnRecord.style.backgroundColor = "lime";
@@ -48,8 +50,9 @@ btnRecord.addEventListener("click", function(event) {
 	chrome.storage.local.get(["recording","options"], function(storage) {
 
 		if (storage.recording == "none") {
+			// Start recording
 
-			// WRITE EXTENSIONS
+			// Write extensions in the storage
 			if (storage.options.extensions) {
 				chrome.management.getAll(function (extensions) {
 					chrome.storage.local.set({ "extensions": extensions });
@@ -63,8 +66,10 @@ btnRecord.addEventListener("click", function(event) {
 
 		} 
 		else if (storage.recording == "recording") {
+			// Confirm if you want to stop recording
+
 			confirmText.innerText = "Are you sure?";
-			confirmBox.classList.toggle("hidden");
+			confirmBox.classList.toggle("hidden");	// Show/hide  the confirm dialog (this time, show)
 			chrome.storage.local.set({ recording:"confirm" });
 		} 
 	});
@@ -84,31 +89,25 @@ confirmYes.addEventListener("click", function (event) {
 		if (result.recording == "confirm") {
 			confirmTextAnim("Do you want to download?");
 			chrome.storage.local.set({ recording: "download" });
-			initRecord();
+			initRecord();	// Stop recording
 		} 
 		else if (result.recording == "download") {
 			confirmBox.classList.toggle("hidden");
 			download();
-			storageInit();
+			storageInit();	// Clean the storage
 			disableOptions(false);
-			setStorageFromOptions();
+			setStorageFromOptions();	
 		}
 
 	});
 });
-
-function confirmTextAnim(str) {
-	confirmText.style.opacity = 0;
-	setTimeout(() => {confirmText.innerText = str; } , 100);
-	setTimeout(() => {confirmText.style.opacity = 1; } , 200);
-}
 
 confirmNo.addEventListener("click", function (event) {
 	chrome.storage.local.get("recording", function (result) {
 
 		if (result.recording == "confirm") {
 			confirmBox.classList.toggle("hidden");
-			chrome.storage.local.set({ recording: "recording" });
+			chrome.storage.local.set({ recording: "recording" });	// Record again
 		} 
 		else if (result.recording == "download") {
 			confirmBox.classList.toggle("hidden");
@@ -120,8 +119,15 @@ confirmNo.addEventListener("click", function (event) {
 	});
 });
 
+// Animation of the dialog text, fading
+function confirmTextAnim(str) {
+	confirmText.style.opacity = 0;
+	setTimeout(() => {confirmText.innerText = str; } , 100);
+	setTimeout(() => {confirmText.style.opacity = 1; } , 200);
+}
+
 for (let opt of options) {
-	opt.addEventListener("click", function (event) {
+	opt.addEventListener("click", function (event) {	// Change the storage options value from the checkboxes when clicked
 		chrome.storage.local.get("options", function (result) {
 			result.options[opt.value] = opt.checked;
 			chrome.storage.local.set({ "options": result.options });
@@ -162,6 +168,9 @@ function download(data, filename) {
 		saveAs(new Blob([getJSONStringToDownload(data)], {type: "text/plain;charset=utf-8"}), "recorded.json");
 	});
 }
+
+// ELABORATE THE DATA TO BE DOWNLOADED. 
+// Trasform the object in the root elements into array elements.
 
 function getJSONStringToDownload(data) {
 	KEYSTOIGNORE.forEach( key => { delete data[key] } );
