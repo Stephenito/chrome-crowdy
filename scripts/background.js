@@ -68,17 +68,19 @@ function writeEvent() {
 			if (!storage.options[item.type])
 				continue;
 
-			item.domain = trimDomain(item.domain);
-
-			let storageDomain = (item.array == ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
-			
-			// If the item is of type 'initial array', and an item from the same domain has already been stored, don't store it
-			if (storage[storageDomain].includes(item.domain) || (obj[storageDomain] && obj[storageDomain].includes(item.domain))) {
-				if (item.array != ARR_EVENTS)
-					continue;
-			} else {
-				obj[storageDomain] = storage[storageDomain];
-				obj[storageDomain].push(item.domain);
+			let domain;
+			if (item.domain) {
+				domain = trimDomain(item.domain);
+				let storageDomain = (item.array == ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
+				
+				// If the item is of type 'initial array', and an item from the same domain has already been stored, don't store it
+				if (storage[storageDomain].includes(domain) || (obj[storageDomain] && obj[storageDomain].includes(domain))) {
+					if (item.array != ARR_EVENTS)
+						continue;
+				} else {
+					obj[storageDomain] = storage[storageDomain];
+					obj[storageDomain].push(domain);
+				}
 			}
 			
 			// Write an object in the root. I don't write in arrays because they have to be entirely read and written all times.
@@ -89,7 +91,7 @@ function writeEvent() {
 			obj[key].time = printDatetime(new Date());
 			obj[key].type = item.type;
 			obj[key].data = item.data;
-			obj[key].domain = item.domain;
+			obj[key].domain = domain;
 		}
 
 		obj["num"] = num;

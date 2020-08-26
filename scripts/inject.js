@@ -96,5 +96,7 @@ function consoleAndErrorInjection() {
 
 	assignConsole();
 	window.addEventListener('error',writeErrorForPage);
+	//console.log("bella");
+	//cacc
 }
 

@@ -25,7 +25,8 @@ function optionListener(event) {
 	let spans = iframe.contentWindow.document.querySelectorAll("#list span[type=" + event.target.id + "]");
 	toggleValue(event.target);
 
-	spans.forEach( span => { span.style.display = event.target.value; } );
+	let value = event.target.value;
+	spans.forEach( span => { span.style.display = value; } );
 }
 
 function arrayListener(event) {

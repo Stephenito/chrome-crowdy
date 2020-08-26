@@ -13,6 +13,10 @@ h3 {
 	font-family: "Lucida Console", Monaco, monospace;
 }
 
+table {
+	overflow: hidden;
+}
+
 button {
 	border: 1px solid;
 	border-radius: 100px;
@@ -59,6 +63,7 @@ td.hidden, td.hidden p, td.hidden button {
 #popupBody {
 	margin:3px;
 	font-size:95%;
+	overflow:hidden;
 }
 
 #popupBody table {
