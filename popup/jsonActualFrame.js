@@ -14,7 +14,10 @@ function deleteAllChar(str,char) {
 }
 
 function getPrePiece(obj,array) {
-	return "<span type=" + obj.type + " style='display:" + ((array != "extensions") ? (window.parent.document.getElementById(obj.type).value) : "block") +  ";'>" + JSON.stringify(obj,null,2) + "<hr></span>";
+	let head = "<span type=" + obj.type + " style='display:" + ((array != "extensions") ? (window.parent.document.getElementById(obj.type).value) : "block") +  ";'>";
+	let body = "<details> <summary>" + ((obj.type) ? " { type: " + obj.type + ", time: " + obj.time + ", domain: " + obj.domain + " }" : "details") + "</summary> " + JSON.stringify(obj,null,2) + " </details>"
+	let tail = "<hr></span>";
+	return  head + body + tail;
 	//return "<span type=" + obj.type + ((obj.domain != undefined) ? (" domain=" + deleteAllChar(obj.domain,".")) : " ") + " style='display:block;'>" + JSON.stringify(obj,null,2) + "<hr></span>";
 }
 

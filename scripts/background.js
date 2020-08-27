@@ -1,5 +1,7 @@
 "use strict";
 
+// In the following, the 'array' parameter is a string that defines in which final array (events, starting_localStorage, starting_cookies) the object has to be stored.
+
 function getWebErrors(details) {
 	tryWriteEvent(ERRORGET,ARR_EVENTS,details, (details.initiator) ? details.initiator : details.url);
 }
@@ -8,7 +10,7 @@ function getCookies (changeInfo) {
 	tryWriteEvent(COOKIE,ARR_EVENTS,changeInfo,changeInfo.cookie.domain);
 }
 
-function getInitialConditions (request, sender, sendResponse) {
+function getGeneralData (request, sender, sendResponse) {
 	if (request.type == ARR_COOKIESTART) {
 		chrome.cookies.getAll({ url:request.data }, function (cookielist) {
 			tryWriteEvent(COOKIE, ARR_COOKIESTART, cookielist, request.data);	// This one needs some elaboration, so there is the need of the 'if-else' clause
@@ -19,12 +21,12 @@ function getInitialConditions (request, sender, sendResponse) {
 }
 
 function setListeners() { // Active background page
-	chrome.runtime.onMessage.addListener(getInitialConditions);
+	chrome.runtime.onMessage.addListener(getGeneralData);
 	chrome.webRequest.onErrorOccurred.addListener(getWebErrors , {urls: ["<all_urls>"]});
 	chrome.cookies.onChanged.addListener(getCookies);
 }
 function unsetListeners() { // Disabled background page
-	chrome.runtime.onMessage.removeListener(getInitialConditions);
+	chrome.runtime.onMessage.removeListener(getGeneralData);
 	chrome.webRequest.onErrorOccurred.removeListener(getWebErrors , {urls: ["<all_urls>"]});
 	chrome.cookies.onChanged.removeListener(getCookies);
 }
@@ -74,16 +76,17 @@ function writeEvent() {
 				let storageDomain = (item.array == ARR_COOKIESTART) ? "domains_cookie" : "domains_storage";
 				
 				// If the item is of type 'initial array', and an item from the same domain has already been stored, don't store it
-				if (storage[storageDomain].includes(domain) || (obj[storageDomain] && obj[storageDomain].includes(domain))) {
-					if (item.array != ARR_EVENTS)
+				if (item.array != ARR_EVENTS) {
+					if (storage[storageDomain].includes(domain) || (obj[storageDomain] && obj[storageDomain].includes(domain))) {
 						continue;
-				} else {
-					obj[storageDomain] = storage[storageDomain];
-					obj[storageDomain].push(domain);
+					} else {
+						obj[storageDomain] = storage[storageDomain];
+						obj[storageDomain].push(domain);
+					}
 				}
 			}
 			
-			// Write an object in the root. I don't write in arrays because they have to be entirely read and written all times.
+			// Write an object in the root. I don't write in arrays because they have to be entirely read and written all times in the chrome.storage.
 			num = num + 1;
 			let key = item.array + "|" + ('000000000000' + num.toString()).slice(-12); 	
 
@@ -108,11 +111,14 @@ function preExit() {	// When 'writeEvent' is finished, if some other data has be
 }
 
 function trimDomain(domain) {	// Give domains the same pattern to be able to compare them
+	let res;
 	if (domain.startsWith("http://"))
-		return domain.slice(7).split("/")[0];
-	if (domain.startsWith("https://"))
-		return domain.slice(8).split("/")[0];
-	if (domain.startsWith("."))
-		return domain.slice(1).split("/")[0];
-	return domain.split("/")[0];
+		res = domain.slice(7);
+	else if (domain.startsWith("https://"))
+		res = domain.slice(8);
+	else if (domain.startsWith("."))
+		res = domain.slice(1);
+	else
+		res = domain;
+	return res.split("/")[0];
 }
