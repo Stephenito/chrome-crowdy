@@ -1,6 +1,20 @@
 <html>
-	<head></head>
+	<head>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script src="script.js"></script>
+		<link rel="stylesheet" href="style.css"/>
+	</head>
 	<body>
-		First commit
+		<div id="inputdiv">
+			<input type="file" id="file" accept=".json">
+			<button onclick="clickFileChooser()">Choose file</button><br>
+			<button onclick="readFile()">Confirm</button>
+		</div>
+		<br>
+		
+		<div id="chart"></div>
+		<br>
+
+		<div id="detailsdiv"></div>
 	</body>
 </html>
