@@ -4,6 +4,7 @@ const TYPES = ["click","cookie","storage","error","geterror"];
 
 var JSONdata = {};
 var JSONtimeobj = {};
+var chart;
 
 function clickFileChooser() {
 	document.getElementById("file").click();
@@ -54,11 +55,9 @@ function draw() {
 
 		let finalArr = [];
 		Object.keys(JSONtimeobj).forEach((key) => {
-			let item = JSONtimeobj[key];
 			let times = key.split(' ')[1].split(':');
-			finalArr.push([{ v:[parseInt(times[0]), parseInt(times[1]), parseInt(times[2])] }].concat(getTypesList(item)));
+			finalArr.push([{ v:[parseInt(times[0]), parseInt(times[1]), parseInt(times[2])] }].concat(getTypesList(JSONtimeobj[key])));
 		});
-
 		data.addRows(finalArr);
 
 		var options = {
@@ -74,22 +73,24 @@ function draw() {
 			backgroundColor: 'lemonchiffon'
 		};
 
-		var chart = new google.visualization.ColumnChart(document.getElementById('chart'));
+		chart = new google.visualization.ColumnChart(document.getElementById('chart'));
 
-		google.visualization.events.addListener(chart, 'select', function () {
-			let selectedItem = chart.getSelection()[0];
-			if (!selectedItem || selectedItem.row == null) 
-				return;
-
-			let div = document.getElementById('detailsdiv');
-			div.innerHTML = '';
-			Object.values(JSONtimeobj)[selectedItem.row].forEach( (item) => {
-				if (TYPES.indexOf(item.type) == selectedItem.column - 1) {
-					div.innerHTML += '<pre>' + JSON.stringify(item,null,2) + '</pre><hr>';
-				}
-			});
-		});
+		google.visualization.events.addListener(chart, 'select', columnClick);
 
 		chart.draw(data, options);
 	}
+}
+
+function columnClick () {
+	let selectedItem = chart.getSelection()[0];
+	if (!selectedItem || selectedItem.row == null) 
+		return;
+
+	let div = document.getElementById('detailsdiv');
+	div.innerHTML = '';
+	Object.values(JSONtimeobj)[selectedItem.row].forEach( (item) => {
+		if (TYPES.indexOf(item.type) == selectedItem.column - 1) {
+			div.innerHTML += '<pre>' + JSON.stringify(item,null,2) + '</pre><hr>';
+		}
+	});
 }
