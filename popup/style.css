@@ -1,5 +1,5 @@
 body {
-	font-family: "Comic Sans MS", cursive, sans-serif;
+	font-family: Roboto, sans-serif, Helvetica, Arial, sans-serif;
 	font-size: 100%;
 }
 
@@ -21,7 +21,6 @@ button {
 	border: 1px solid;
 	border-radius: 100px;
 	background-color: lemonchiffon;
-	font-family: "Comic Sans MS", cursive, sans-serif;
 	cursor:pointer;
 }
 button:focus {
@@ -66,7 +65,7 @@ td.hidden, td.hidden p, td.hidden button {
 /* POPUP */ 
 
 #popupBody {
-	margin:3px;
+	margin:0px;
 	font-size:95%;
 	overflow:hidden;
 }

@@ -40,7 +40,7 @@ function changeToRecord() {
 // Graphic changes to the recording buttons (not recording phase)
 function initRecord() {
 	textRecord.innerText = "Start recording";
-	btnRecord.style.backgroundColor = "lime";
+	btnRecord.style.backgroundColor = "#0096c7";
 	imgRecord.src = "../icons/start_record.png";
 }
 
