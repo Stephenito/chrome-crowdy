@@ -1,8 +1,8 @@
 "use strict";
 
+var body = document.getElementById("popupBody");
+
 var btnRecord = document.getElementById("btn_record");
-var textRecord = document.getElementById("text_record");
-var imgRecord = document.getElementById("img_record");
 
 var btnJSONpattern = document.getElementById("btn_json_pattern");
 var btnJSONactual = document.getElementById("btn_json_actual");
@@ -32,16 +32,14 @@ function setStorageFromOptions() {	// Set the options in the storage from the se
 
 // Graphic changes to the recording buttons (recording phase)
 function changeToRecord() {
-	textRecord.innerText = "Stop recording";
-	btnRecord.style.backgroundColor = "firebrick";
-	imgRecord.src = "../icons/stop_record.png";
+	btnRecord.innerText = "Stop recording";
+	body.style.backgroundImage = "linear-gradient(to top, white , #bdffcc)"
 }
 
 // Graphic changes to the recording buttons (not recording phase)
 function initRecord() {
-	textRecord.innerText = "Start recording";
-	btnRecord.style.backgroundColor = "#0096c7";
-	imgRecord.src = "../icons/start_record.png";
+	btnRecord.innerText = "Start recording";
+	body.style.backgroundImage = "linear-gradient(to top, white , #e6ffff)"
 }
 
 // LISTENERS

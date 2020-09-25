@@ -46,7 +46,7 @@ summary {
 	cursor:pointer;
 }
 
-td.hidden, td.hidden p, td.hidden button {
+div.hidden, div.hidden p, div.hidden button {
 	font-size:0 !important;	
 	max-height:0 !important;	
 	height:0 !important;	
@@ -65,50 +65,103 @@ td.hidden, td.hidden p, td.hidden button {
 /* POPUP */ 
 
 #popupBody {
-	margin:0px;
-	font-size:95%;
+	font-size:100%;
 	overflow:hidden;
+	white-space: nowrap;
+	transition: all 0.5s ease 0s;
+	display:block;
+
+	background-image: linear-gradient(to top, white , #e6ffff);
+}
+
+#headline img {
+	margin:5px;
+	height:30px;
 }
 
 #popupBody table {
 	border-collapse: collapse;
 	text-align: center;
 }
-#popupBody td {
-	height:30px;
-	line-height: 170%;
-    white-space: nowrap;
-	border: 1px solid black;
-	padding: 10px;
-	transition: all 0.5s ease 0s;
+
+#bug_div img, #bug_div p {
+	display:inline;
+	margin-left:10px;
 }
 
-#img_record {
-	margin:5px;
+#popupBody hr {
+	background-color: #f5f5f5;
+	border-color:transparent;
+	margin:2px;
+}
+
+#popupBody button {
+	border-radius: 4px;
+	border-color:transparent;
+	background-color: red;
+	color:white;
+	font-weight: 700;
+	text-transform: uppercase;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+}
+
+#btn_record {
+	margin:15px;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-left:20px;
+	padding-right:20px;
+}
+
+#bug_div {
+	text-align:right;
+	text-transform: uppercase;
+}
+
+#bug_div img {
+	height:15px;
+}
+#bug_div p {
+	font-size:10px;
+}
+
+#options {
+	margin-left:20%;
+	display:block;
 }
 
 #text_record {
 	margin: 5px;
 }
 
-#confirm {
-	background-color: yellow;
-}
-
 #confirm_text {
 	transition: opacity 0.1s linear 0s;
+	text-align: center;
+}
+
+#confirm {
+	transition: all 0.5s ease 0s;
+	text-align: center;
 }
 
 #confirm_yes {
-	width:50%;
+	width:30%;
+	margin-right:10%;
 }
 
 #confirm_no {
-	width:50%;
+	width:30%;
+	margin-left:10%;
 }
 
-#options {
-	text-align: left;
+#opt_headline {
+	color:#62aa4e;
+	font-weight: bold;
+	margin-left:5px;
+}
+
+.popupWrapper {
+	margin:10px;
 }
 
 /* JSON */
