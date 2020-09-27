@@ -33,7 +33,7 @@ function setStorageFromOptions() {	// Set the options in the storage from the se
 // Graphic changes to the recording buttons (recording phase)
 function changeToRecord() {
 	btnRecord.innerText = "Stop recording";
-	body.style.backgroundImage = "linear-gradient(to top, white , #bdffcc)"
+	body.style.backgroundImage = "linear-gradient(to top, white , #fff0f0)"
 }
 
 // Graphic changes to the recording buttons (not recording phase)

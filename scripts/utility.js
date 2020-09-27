@@ -9,7 +9,8 @@ const COOKIE = "cookie";
 const STORAGE = "storage";
 const CACHEMISS = "cachemiss";
 const EXTENSIONS = "extensions";
-const OPTIONS = [CONSOLE, CLICK, ERROR, ERRORGET, COOKIE, STORAGE, CACHEMISS, EXTENSIONS];
+const NETWORK = "network";
+const OPTIONS = [CONSOLE, CLICK, ERROR, ERRORGET, COOKIE, STORAGE, CACHEMISS, EXTENSIONS, NETWORK];
 
 // ARRAYS' NAMES
 const ARR_EVENTS = "events";

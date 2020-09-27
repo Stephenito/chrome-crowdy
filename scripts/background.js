@@ -1,6 +1,16 @@
 "use strict";
 
 // In the following, the 'array' parameter is a string that defines in which final array (events, starting_localStorage, starting_cookies) the object has to be stored.
+/*
+function getNetworkRequest(request) {
+	console.log(request);
+}*/
+
+function getNetworkDebugInfo(source, method, params) {
+	chrome.tabs.get(source.tabId, function (tab) {
+		tryWriteEvent(NETWORK,ARR_EVENTS, {method:method, params:params}, tab.url);
+	});
+}
 
 function getWebErrors(details) {
 	tryWriteEvent(ERRORGET,ARR_EVENTS,details, (details.initiator) ? details.initiator : details.url);
@@ -20,15 +30,54 @@ function getGeneralData (request, sender, sendResponse) {
 		tryWriteEvent(request.type, request.array, request.data, request.domain);	// The default data sent to chrome.runtime.onMessagge is a generic event
 }
 
+function attachDebugees() {
+	chrome.debugger.onEvent.addListener(getNetworkDebugInfo);
+
+	chrome.tabs.getAllInWindow(null, function(tabs) {
+		for (let tab of tabs)
+			attachTab(tab);
+	});
+
+	chrome.tabs.onCreated.addListener(attachTab);
+}
+
+function isAttachable(url) {
+	return (url && url.startsWith("http") && !url.startsWith("https://docs.google.com"));
+}
+
+function attachTab (tab) {
+	if (isAttachable(tab.url) || isAttachable(tab.pendingUrl)) {
+		chrome.debugger.attach({ tabId: tab.id },"1.3");
+		chrome.debugger.sendCommand({ tabId: tab.id }, "Network.enable");
+	}
+}
+
+function detachDebugees() {
+	chrome.debugger.onEvent.removeListener(getNetworkDebugInfo);
+
+	chrome.tabs.getAllInWindow(null, function(tabs) {
+		for (let tab of tabs)
+			if (isAttachable(tab.url))
+				chrome.debugger.detach({ tabId: tab.id });
+	});
+
+	chrome.tabs.onCreated.removeListener(attachTab);
+}
+
 function setListeners() { // Active background page
 	chrome.runtime.onMessage.addListener(getGeneralData);
 	chrome.webRequest.onErrorOccurred.addListener(getWebErrors , {urls: ["<all_urls>"]});
+	//chrome.webRequest.onCompleted.addListener(getNetworkRequest, {urls: ["<all_urls>"]});
 	chrome.cookies.onChanged.addListener(getCookies);
+	attachDebugees();
 }
-function unsetListeners() { // Disabled background page
+
+function unsetListeners() { // Disable background page
 	chrome.runtime.onMessage.removeListener(getGeneralData);
 	chrome.webRequest.onErrorOccurred.removeListener(getWebErrors , {urls: ["<all_urls>"]});
+	//chrome.webRequest.onCompleted.removeListener(getNetworkRequest, {urls: ["<all_urls>"]});
 	chrome.cookies.onChanged.removeListener(getCookies);
+	detachDebugees();
 }
 
 storageInit();

@@ -21,6 +21,7 @@
       	"tabs",
       	"downloads",
 		"webRequest",
+		"debugger",
 		"<all_urls>"
     ],
 

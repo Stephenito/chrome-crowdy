@@ -26,7 +26,7 @@ function injectJS () {
 			return;
 
 		if (event.data.ext == "chrome-crowdy")	// Check if the messagge comes from the extension injected script
-			chrome.runtime.sendMessage({ "type":event.data.type, "array":ARR_EVENTS, "data":event.data.data, "domain":event.data.domain });
+			chrome.runtime.sendMessage({ "type":event.data.type, "array":ARR_EVENTS, "data":event.data.data, "domain":window.location.href });
 	}, false);
 
 
@@ -46,57 +46,59 @@ function injectJS () {
 	// APPEND SCRIPT FOR CONSOLE AND ERROR EVENTS
 
 	let script = document.createElement("script");
-	script.innerHTML = consoleAndErrorInjection + "\consoleAndErrorInjection(); \n";
+	//script.innerHTML = consoleAndErrorInjection + "\consoleAndErrorInjection(); \n";
+	script.innerHTML = code;
 	document.getElementsByTagName("html")[0].appendChild(script);
 }
 
-function consoleAndErrorInjection() {
+var code = `{
+	let crowdy = {
 
-	// SEND DATA OF THE CONSOLE TO CONTENT.JS
-	function writeLogForPage(consolearguments, type) {
-		window.postMessage({ "type":"console", "ext":"chrome-crowdy", "data": {"type": type, "msg": consolearguments } } ,"*");
-	}
+		// SEND DATA OF THE CONSOLE TO CONTENT.JS
+		writeLogForPage: function (consolearguments, type) {
+			window.postMessage({ "type":"console", "ext":"chrome-crowdy", "data": {"type": type, "msg": consolearguments } } ,"*");
+		},
 
-	// SEND DATA OF THE ERRORS TO CONTENT.JS
-	function writeErrorForPage(e) {
-		let obj = {
-			"message": "" + e.message,
-			"filename": "" + e.filename,
-			"lineno": e.lineno,
-			"colno": e.colno,
-			"error": "" + e.error
+		// SEND DATA OF THE ERRORS TO CONTENT.JS
+		writeErrorForPage: function (e) {
+			let obj = {
+				"message": "" + e.message,
+				"filename": "" + e.filename,
+				"lineno": e.lineno,
+				"colno": e.colno,
+				"error": "" + e.error
+			}
+			window.postMessage({ "type":"error", "ext":"chrome-crowdy", "data":obj } , "*");
+			return false;
+		},
+
+		// INIT CONSOLE
+		assignConsole: function () {
+		    console.defaultLog = console.log.bind(console);
+		    console.log = function(consolearguments){
+		    	crowdy.writeLogForPage(consolearguments,"c_log");
+		        console.defaultLog.apply(console, [consolearguments]);
+		    }
+		    console.defaultError = console.error.bind(console);
+		    console.error = function(consolearguments){
+		    	crowdy.writeLogForPage(consolearguments,"c_error");
+		        console.defaultError.apply(console, [consolearguments]);
+		    }
+		    console.defaultWarn = console.warn.bind(console);
+		    console.warn = function(consolearguments) {
+		    	crowdy.writeLogForPage(consolearguments,"c_warn");
+		        console.defaultWarn.apply(console, [consolearguments]);
+		    }
+		    console.defaultDebug = console.debug.bind(console);
+		    console.debug = function(consolearguments) {
+		        crowdy.writeLogForPage(consolearguments,"c_debug");
+		        console.defaultDebug.apply(console, [consolearguments]);
+		    }
 		}
-		window.postMessage({ "type":"error", "ext":"chrome-crowdy", "data":obj } , "*");
-		return false;
-	};
-
-	// INIT CONSOLE
-	function assignConsole() {
-	    console.defaultLog = console.log.bind(console);
-	    console.log = function(consolearguments){
-	    	writeLogForPage(consolearguments,"c_log");
-	        console.defaultLog.apply(console, [consolearguments]);
-	    }
-	    console.defaultError = console.error.bind(console);
-	    console.error = function(consolearguments){
-	    	writeLogForPage(consolearguments,"c_error");
-	        console.defaultError.apply(console, [consolearguments]);
-	    }
-	    console.defaultWarn = console.warn.bind(console);
-	    console.warn = function(consolearguments) {
-	    	writeLogForPage(consolearguments,"c_warn");
-	        console.defaultWarn.apply(console, [consolearguments]);
-	    }
-	    console.defaultDebug = console.debug.bind(console);
-	    console.debug = function(consolearguments) {
-	        writeLogForPage(consolearguments,"c_debug");
-	        console.defaultDebug.apply(console, [consolearguments]);
-	    }
 	}
+	crowdy.assignConsole();
+	window.addEventListener('error',crowdy.writeErrorForPage);
 
-	assignConsole();
-	window.addEventListener('error',writeErrorForPage);
 	//console.log("bella");
 	//cacc
-}
-
+}`
